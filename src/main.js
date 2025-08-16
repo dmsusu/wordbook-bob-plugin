@@ -247,7 +247,7 @@ function checkWordByLLM(word, callback) {
                     {"role": "system", "content": systemPrompt},
                     {"role": "user", "content": word}
                 ],
-                "max_tokens": 1,
+                "max_tokens": 16,
                 "temperature": 0,
                 "extra": {"with_thinking": false}
             },
@@ -282,7 +282,7 @@ function checkWordByLLM(word, callback) {
                     {"role": "system", "content": systemPrompt},
                     {"role": "user", "content": word}
                 ],
-                "max_tokens": 1,
+                "max_tokens": 16,
                 "temperature": 0
             },
             handler: function(res) {
