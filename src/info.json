@@ -57,6 +57,42 @@
       ]
     },
     {
+      "identifier": "azure_api_key",
+      "type": "text",
+      "title": "Azure API Key",
+      "textConfig": {
+        "type": "secure",
+        "placeholderText": "输入 Azure OpenAI API Key"
+      }
+    },
+    {
+      "identifier": "azure_endpoint",
+      "type": "text",
+      "title": "Azure Endpoint",
+      "textConfig": {
+        "type": "visible",
+        "placeholderText": "例如 https://xxx.openai.azure.com"
+      }
+    },
+    {
+      "identifier": "azure_deployment_name",
+      "type": "text",
+      "title": "Deployment Name",
+      "textConfig": {
+        "type": "visible",
+        "placeholderText": "Azure OpenAI 部署名称"
+      }
+    },
+    {
+      "identifier": "azure_model",
+      "type": "text",
+      "title": "Model",
+      "textConfig": {
+        "type": "visible",
+        "placeholderText": "模型名称"
+      }
+    },
+    {
       "identifier": "wordbook_id",
       "type": "text",
       "title": "欧路单词本 id",
