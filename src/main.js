@@ -122,7 +122,13 @@ function translate(query, completion) {
         return;
     }
     if (authorization) {
-        addWord(selected_dict, authorization, text, completion);
+        checkWordByLLM(text, function(pass){
+            if (pass) {
+                addWord(selected_dict, authorization, text, completion);
+            } else {
+                completion({'result': buildResult("非英语单词无需添加单词本")});
+            }
+        });
     } else {
         completion({'error': buildError('「认证信息」缺失')});
     }
@@ -212,6 +218,42 @@ function addWordShanbay(token, word, completion) {
             } else {
                 completion({'error': buildError('扇贝词典 auth_token 错误或过期，请重新填写。')});
                 $log.info('接口返回值 data : ' + JSON.stringify(data));
+            }
+        }
+    });
+}
+
+function checkWordByLLM(word, callback) {
+    var api_key = $option.azure_api_key;
+    var endpoint = $option.azure_endpoint;
+    var deployment = $option.azure_deployment_name;
+    var model = $option.azure_model;
+    if (!(api_key && endpoint && deployment && model)) {
+        callback(true);
+        return;
+    }
+    var url = endpoint + "/openai/deployments/" + deployment + "/chat/completions?api-version=2023-07-01-preview";
+    $http.post({
+        url: url,
+        header: {
+            "api-key": api_key,
+            "Content-Type": "application/json"
+        },
+        body: {
+            "model": model,
+            "messages": [
+                {"role": "system", "content": "You are a service that checks if the text is a valid English word. Reply only with Yes or No."},
+                {"role": "user", "content": word}
+            ],
+            "max_tokens": 1,
+            "temperature": 0
+        },
+        handler: function(res) {
+            try {
+                var answer = res.data.choices[0].message.content.trim();
+                callback(answer === 'Yes');
+            } catch (e) {
+                callback(false);
             }
         }
     });
