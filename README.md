@@ -12,6 +12,7 @@ cookie](https://github.com/ripperhe/Bob/issues/115)。
 
 3、`扇贝单词` 是通过 api 添加到指导单词本，需要登录后从网页获取 auth_token
 4、新增可选的 Azure OpenAI 检测，填写 Azure API Key、Endpoint、Deployment Name 与 Model 后，只有当模型判断文本为有效英文单词时才会添加到单词本，避免邮箱或姓名等无效内容。
+5、支持在 Azure OpenAI 与火山引擎之间选择校验服务，可自定义系统提示词并默认关闭思考模式以获得更快响应。
 ## 设置
 
 ![](imgs/1.png)

@@ -57,6 +57,31 @@
       ]
     },
     {
+      "identifier": "llm_provider",
+      "type": "menu",
+      "title": "LLM 服务",
+      "defaultValue": "azure",
+      "menuValues": [
+        {
+          "title": "OpenAI Azure",
+          "value": "azure"
+        },
+        {
+          "title": "火山引擎",
+          "value": "volcano"
+        }
+      ]
+    },
+    {
+      "identifier": "llm_system_prompt",
+      "type": "text",
+      "title": "系统提示词",
+      "textConfig": {
+        "type": "visible",
+        "placeholderText": "自定义系统提示词"
+      }
+    },
+    {
       "identifier": "azure_api_key",
       "type": "text",
       "title": "Azure API Key",
@@ -87,6 +112,33 @@
       "identifier": "azure_model",
       "type": "text",
       "title": "Model",
+      "textConfig": {
+        "type": "visible",
+        "placeholderText": "模型名称"
+      }
+    },
+    {
+      "identifier": "volcano_api_key",
+      "type": "text",
+      "title": "火山 API Key",
+      "textConfig": {
+        "type": "secure",
+        "placeholderText": "输入火山引擎 API Key"
+      }
+    },
+    {
+      "identifier": "volcano_endpoint",
+      "type": "text",
+      "title": "火山 Endpoint",
+      "textConfig": {
+        "type": "visible",
+        "placeholderText": "例如 https://ark.cn-beijing.volces.com/api/v3"
+      }
+    },
+    {
+      "identifier": "volcano_model",
+      "type": "text",
+      "title": "火山模型",
       "textConfig": {
         "type": "visible",
         "placeholderText": "模型名称"
