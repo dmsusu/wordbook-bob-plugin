@@ -122,13 +122,11 @@ function translate(query, completion) {
         return;
     }
     if (authorization) {
-        checkWordByLLM(text, function(pass){
-            if (pass) {
-                addWord(selected_dict, authorization, text, completion);
-            } else {
-                completion({'result': buildResult("非英语单词无需添加单词本")});
-            }
-        });
+        if (isValidWord(text)) {
+            addWord(selected_dict, authorization, text, completion);
+        } else {
+            completion({'result': buildResult("非英语单词无需添加单词本")});
+        }
     } else {
         completion({'error': buildError('「认证信息」缺失')});
     }
@@ -223,76 +221,17 @@ function addWordShanbay(token, word, completion) {
     });
 }
 
-function checkWordByLLM(word, callback) {
-    var provider = $option.llm_provider;
-    var systemPrompt = $option.llm_system_prompt || "You are a service that checks if the text is a valid English word. Reply only with Yes or No.";
-    if (provider === 'volcano') {
-        var vApiKey = $option.volcano_api_key;
-        var vEndpoint = $option.volcano_endpoint;
-        var vModel = $option.volcano_model;
-        if (!(vApiKey && vEndpoint && vModel)) {
-            callback(true);
-            return;
-        }
-        var vUrl = vEndpoint + "/chat/completions";
-        $http.post({
-            url: vUrl,
-            header: {
-                "Authorization": "Bearer " + vApiKey,
-                "Content-Type": "application/json"
-            },
-            body: {
-                "model": vModel,
-                "messages": [
-                    {"role": "system", "content": systemPrompt},
-                    {"role": "user", "content": word}
-                ],
-                "max_tokens": 16,
-                "temperature": 0,
-                "extra": {"with_thinking": false}
-            },
-            handler: function(res) {
-                try {
-                    var answer = res.data.choices[0].message.content.trim();
-                    callback(answer === 'Yes');
-                } catch (e) {
-                    callback(false);
-                }
-            }
-        });
-    } else {
-        var api_key = $option.azure_api_key;
-        var endpoint = $option.azure_endpoint;
-        var deployment = $option.azure_deployment_name;
-        var model = $option.azure_model;
-        if (!(api_key && endpoint && deployment && model)) {
-            callback(true);
-            return;
-        }
-        var url = endpoint + "/openai/deployments/" + deployment + "/chat/completions?api-version=2023-07-01-preview";
-        $http.post({
-            url: url,
-            header: {
-                "api-key": api_key,
-                "Content-Type": "application/json"
-            },
-            body: {
-                "model": model,
-                "messages": [
-                    {"role": "system", "content": systemPrompt},
-                    {"role": "user", "content": word}
-                ],
-                "max_tokens": 16,
-                "temperature": 0
-            },
-            handler: function(res) {
-                try {
-                    var answer = res.data.choices[0].message.content.trim();
-                    callback(answer === 'Yes');
-                } catch (e) {
-                    callback(false);
-                }
-            }
-        });
+function isValidWord(word) {
+    // 排除邮箱
+    var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (emailPattern.test(word)) {
+        return false;
     }
+    // 排除网址
+    var urlPattern = /^(https?:\/\/|www\.)/i;
+    if (urlPattern.test(word)) {
+        return false;
+    }
+    // 只允许字母和连字符
+    return /^[a-zA-Z-]+$/.test(word);
 }
